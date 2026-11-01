@@ -5,3 +5,4 @@ DEC = 3
 RFG = 11
 PG = 21
 TREE = 31
+GM = 22

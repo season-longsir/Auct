@@ -12,6 +12,8 @@ A Game
 
   - PG: Power Generator
 
+  - GM: Gold Mine
+
 - DEC: Decoration
 
   - TREE: Decorative Tree
