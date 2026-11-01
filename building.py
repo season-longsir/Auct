@@ -1,55 +1,65 @@
-from constants import *
+"""建筑数据模型：只保存类型、网格位置、尺寸和基础属性，不负责绘制。"""
 
+from dataclasses import dataclass
+
+from constants import BUILDING_SIZES, CCC, DEC, GM, OB, PG, RB, RFG, TREE
+
+
+@dataclass
 class Building:
-    def __init__(self, btype: int, health: float, 
-                 level: int, position: list[float, float]):
-        self.type = btype
-        self.health = health
-        self.level = level
-        self.position = position
+    """已放置或待预览的建筑数据。"""
 
-class CentralB(Building):
-    def __init__(self, health: float, level: int, position: list[float, float]):
-        super().__init__(CCC, health, level, position)
+    type: int
+    grid_x: int
+    grid_y: int
+    width: int
+    height: int
+    health: float = 100.0
+    level: int = 1
+    subtype: int | None = None
 
-class OffensiveB(Building):
-    def __init__(self, health: float, subtype, damage: float, 
-                 cooltime: float, level: int, position: list[float, float]):
-        super().__init__(OB, health, level, position)
-        self.damage = damage
-        self.cooltime = cooltime
-        self.subtype = subtype
+    @property
+    def grid_position(self) -> tuple[int, int]:
+        """建筑占地左上角的网格坐标。"""
+        return self.grid_x, self.grid_y
 
-class ResourseB(Building):
-    def __init__(self, health: float, level: int, subtype: int, position: list[float, float]):
-        super().__init__(RB, health, level, position)
-        self.subtype = subtype
+    @classmethod
+    def for_type(
+        cls,
+        building_type: int,
+        grid_x: int = 0,
+        grid_y: int = 0,
+        health: float = 100.0,
+        level: int = 1,
+    ) -> "Building":
+        """依据建筑类型常量创建数据实例。扩展阶段可在此添加属性/子类。"""
+        width, height = BUILDING_SIZES[building_type]
+        if building_type not in BUILDING_SIZES:
+            raise ValueError(f"不支持的建筑类型: {building_type}")
 
-class DecorationB(Building):
-    def __init__(self, level: int, subtype: int, position: list[float, float]):
-        super().__init__(DEC, 0, level, position)
-        self.subtype = subtype
+        return cls(
+            type=building_type,
+            grid_x=grid_x,
+            grid_y=grid_y,
+            width=width,
+            height=height,
+            health=health,
+            level=level,
+            subtype=building_type,
+        )
+
+    @property
+    def category(self) -> int:
+        """建筑大类，具体可放置类型始终保存在type中。"""
+        if self.type == CCC:
+            return CCC
+        if self.type == RFG:
+            return OB
+        if self.type in (PG, GM):
+            return RB
+        if self.type == TREE:
+            return DEC
+        raise ValueError(f"不支持的建筑类型: {self.type}")
 
 
-
-class RapidFire(OffensiveB):
-    def __init__(self, health: float, damage: float, cooltime:float, 
-                 level: int, position: list[float, float]):
-        super().__init__(health, RFG, damage, cooltime, level, position)
-
-class PowerGen(ResourseB):
-    def __init__(self, health: float, level: int, position: list[float, float]):
-        super().__init__(health, level, PG, position)
-
-class GoldMine(ResourseB):
-    def __init__(self, health, level, position):
-        super().__init__(health, level, GM, position)
-
-class Tree(DecorationB):
-    def __init__(self, level: int, position: list[float, float]):
-        super().__init__(level, TREE, position)
-
-
-
-# a = RapidFire(1,2,3,4,(1,2))
-# print(a)
+# 下一阶段扩展点：建筑占地冲突、不可建造地块、升级和建筑专属属性。
