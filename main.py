@@ -6,6 +6,7 @@ import pygame
 
 from building import Building
 from constants import (
+    BUILDING_NAMES,
     BACK_BUTTON_RECT,
     BASE_CELL_SIZE,
     BASE_GRID_COLUMNS,
@@ -55,7 +56,6 @@ from constants import (
     TITLE_FONT_SIZE,
     WINDOW_TITLE,
 )
-from readme import BUILDING_NAMES
 
 
 # 初始化区：pygame、窗口、字体和状态机数据。

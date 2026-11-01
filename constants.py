@@ -80,3 +80,10 @@ BUILDING_HEALTH = {
 	GM: 350,
 	TREE: 1,
 }
+BUILDING_NAMES = {
+    CCC: "中央指挥舱",
+    RFG: "速射炮",
+    PG: "能源发生器",
+    GM: "金矿",
+    TREE: "装饰树",
+}
